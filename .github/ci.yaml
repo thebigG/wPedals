@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches: ['*']
+    tags:
+    paths_ignore: ['docs/**', '.travis.yml']
+  pull_request:
+  release:
+    types: ['created']
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-linux:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {name: "ubuntu-18.04", os: "ubuntu-18.04"}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+           sudo apt-get update
+           sudo apt-get install libboost-all-dev
+    - name: Configure CMake
+      run: |
+           git submodule update --init --recursive
+           mkdir build
+           cd build
+           cmake ..
+    - name: Build example
+        run: |
+              cd build
+              make -j8
