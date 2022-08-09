@@ -1,5 +1,9 @@
 .ONESHELL:
 
+build_container:
+	docker build -t wt_linux:latest -f misc/docker/Dockerfile .
+run_container: build_container
+	docker run -d wt_linux:latest 
 
 build:
 	@mkdir build
