@@ -9,7 +9,13 @@
 #include <Wt/WContainerWidget.h>
 #include <Wt/WLineEdit.h>
 #include <Wt/WPushButton.h>
+#include <Wt/WHBoxLayout.h>
+#include <Wt/WVBoxLayout.h>
+#include <Wt/WGridLayout.h>
+#include <Wt/WSpinBox.h>
+#include <Wt/WDoubleSpinBox.h>
 #include <Wt/WText.h>
+#include <Wt/WPanel.h>
 
 /*
  * A simple hello world application class which demonstrates how to react
@@ -37,7 +43,8 @@ HelloApplication::HelloApplication(const Wt::WEnvironment& env)
   : WApplication(env)
 {
   setTitle("Hello world");                            // application title
-
+  std::string a{std::to_string(__cplusplus)};
+  std::cout<<"version--->"<<a<<std::endl;
   root()->addWidget(std::make_unique<Wt::WText>("Your name, please ? ")); // show some text
 
   nameEdit_ = root()->addWidget(std::make_unique<Wt::WLineEdit>()); // allow text input
@@ -69,6 +76,24 @@ HelloApplication::HelloApplication(const Wt::WEnvironment& env)
   button->clicked().connect([=]() { 
       std::cerr << "Hello there, " << nameEdit_->text() << std::endl;
   });
+
+  auto p_overdrive = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
+  useStyleSheet("resources/pedals.css");
+//  useStyleSheet("resouces/wt.css");
+  p_overdrive->addStyleClass("pedal");
+  auto hbox = p_overdrive->setLayout(std::make_unique<Wt::WVBoxLayout>());
+
+  hbox->addWidget(std::make_unique<Wt::WText>("Overdrive"));
+  auto controls_container = hbox->addWidget(std::make_unique<Wt::WContainerWidget>());
+
+  auto controls_grid_container = controls_container->setLayout(std::make_unique<Wt::WGridLayout>());
+  auto spinner = controls_grid_container->addWidget(std::make_unique<Wt::WDoubleSpinBox>(), 0,0);
+
+  spinner->setRange(0,100);
+  spinner->setValue(50);
+  spinner->setDecimals(2);
+  spinner->setSingleStep(0.1);
+  spinner->setNativeControl(true);
 }
 
 void HelloApplication::greet()
